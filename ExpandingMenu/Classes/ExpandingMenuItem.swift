@@ -45,6 +45,22 @@ public class ExpandingMenuItem: UIView {
         }
     }
     
+    public var color: UIColor? {
+        set {
+            self.frontImageView.backgroundColor = newValue
+        }
+        get {
+            return self.frontImageView.backgroundColor
+        }
+    }
+    
+    public var roundCorners: Bool = false {
+        didSet {
+            self.frontImageView.clipsToBounds = self.roundCorners
+            self.frontImageView.setNeedsDisplay()
+        }
+    }
+    
     var index: Int = 0
     weak var delegate: ExpandingMenuButton?
     private(set) var titleButton:UIButton?
@@ -126,6 +142,12 @@ public class ExpandingMenuItem: UIView {
         self.frontImageView = UIImageView()
         
         super.init(coder: aDecoder)
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        self.frontImageView.layer.cornerRadius = self.roundCorners ? CGRectGetWidth(self.frontImageView.bounds) / 2 : 0.0
     }
     
     // MARK: - Title Button

@@ -38,6 +38,8 @@ class ViewController: UIViewController {
         let item1 = ExpandingMenuItem(size: menuButtonSize, title: "Music", image: UIImage(named: "chooser-moment-icon-music")!, highlightedImage: UIImage(named: "chooser-moment-icon-place-highlighted")!, backgroundImage: UIImage(named: "chooser-moment-button"), backgroundHighlightedImage: UIImage(named: "chooser-moment-button-highlighted")) { () -> Void in
             showAlert("Music")
         }
+        item1.color = UIColor.redColor()
+        item1.roundCorners = true
         
         let item2 = ExpandingMenuItem(size: menuButtonSize, title: "Place", image: UIImage(named: "chooser-moment-icon-place")!, highlightedImage: UIImage(named: "chooser-moment-icon-place-highlighted")!, backgroundImage: UIImage(named: "chooser-moment-button"), backgroundHighlightedImage: UIImage(named: "chooser-moment-button-highlighted")) { () -> Void in
             showAlert("Place")
@@ -64,6 +66,8 @@ class ViewController: UIViewController {
         menuButton.didDismissMenuItems = { (menu) -> Void in
             print("MenuItems dismissed.")
         }
+        
+        menuButton.bottomViewAlpha = 0.14
     }
 }
 
