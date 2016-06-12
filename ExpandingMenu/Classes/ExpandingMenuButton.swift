@@ -163,6 +163,22 @@ public class ExpandingMenuButton: UIView, UIGestureRecognizerDelegate {
         super.init(coder: aDecoder)
     }
     
+    public var color: UIColor? {
+        set {
+            self.centerButton.backgroundColor = newValue
+        }
+        get {
+            return self.centerButton.backgroundColor
+        }
+    }
+    
+    public var roundCorners: Bool = false {
+        didSet {
+            self.centerButton.clipsToBounds = self.roundCorners
+            self.centerButton.setNeedsDisplay()
+        }
+    }
+    
     // MARK: - Configure Menu Items
     public func addMenuItems(menuItems: [ExpandingMenuItem]) {
         self.menuItems += menuItems
@@ -212,6 +228,12 @@ public class ExpandingMenuButton: UIView, UIGestureRecognizerDelegate {
             self.isAnimating = false
             self.didDismissMenuItems?(self)
         })
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        self.centerButton.layer.cornerRadius = self.roundCorners ? CGRectGetWidth(self.centerButton.bounds) / 2 : 0.0
     }
     
     // MARK: - Center Button Action
