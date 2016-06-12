@@ -44,6 +44,8 @@ public class ExpandingMenuButton: UIView, UIGestureRecognizerDelegate {
         }
     }
     
+    public var usesDimmedDismissalView = true
+    
     public var expandingSoundPath: String = NSBundle(URL: NSBundle(forClass: ExpandingMenuButton.classForCoder()).URLForResource("ExpandingMenu", withExtension: "bundle")!)?.pathForResource("expanding", ofType: "caf") ?? "" {
         didSet {
             self.configureSounds()
@@ -92,7 +94,11 @@ public class ExpandingMenuButton: UIView, UIGestureRecognizerDelegate {
     private var centerImage: UIImage?
     private var centerHighlightedImage: UIImage?
     
-    public var expandingSize: CGSize = UIScreen.mainScreen().bounds.size
+    public var expandingSize: CGSize = UIScreen.mainScreen().bounds.size {
+        didSet {
+        self.bottomView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: self.expandingSize.width, height: self.expandingSize.height))
+        }
+    }
     private var foldedSize: CGSize = CGSizeZero
     
     private var bottomView: UIView = UIView()
@@ -345,7 +351,9 @@ public class ExpandingMenuButton: UIView, UIGestureRecognizerDelegate {
         }
         
         UIView.animateWithDuration(animated ? 0.15 : 0.0, delay: animated ? 0.35 : 0.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
-            self.bottomView.alpha = 0.0
+                if self.usesDimmedDismissalView {
+                    self.bottomView.alpha = 0.0
+                }
             }, completion: { (finished) -> Void in
                 // Remove the items from the superview
                 //
@@ -463,15 +471,16 @@ public class ExpandingMenuButton: UIView, UIGestureRecognizerDelegate {
         self.frame = CGRect(x: 0.0, y: 0.0, width: self.expandingSize.width, height: self.expandingSize.height)
         self.center = CGPoint(x: self.expandingSize.width / 2.0, y: self.expandingSize.height / 2.0)
         
-        self.insertSubview(self.bottomView, belowSubview: self.centerButton)
-        
-        // 3. Excute the bottom view alpha animation
-        //
-        UIView.animateWithDuration(animated ? 0.0618 * 3 : 0.0, delay: 0.0, options: UIViewAnimationOptions.CurveEaseIn, animations: { () -> Void in
-            self.bottomView.alpha = self.bottomViewAlpha
-            }, completion: nil)
-        
-        // 4. Excute the center button rotation animation
+        if self.usesDimmedDismissalView {
+            self.insertSubview(self.bottomView, belowSubview: self.centerButton)
+            
+            // 3. Excute the bottom view alpha animation
+            //
+            UIView.animateWithDuration(animated ? 0.0618 * 3 : 0.0, delay: 0.0, options: UIViewAnimationOptions.CurveEaseIn, animations: { () -> Void in
+                self.bottomView.alpha = self.bottomViewAlpha
+                }, completion: nil)
+        }
+                // 4. Excute the center button rotation animation
         //
         if self.enabledExpandingAnimations.contains(.MenuButtonRotation) == true {
             UIView.animateWithDuration(animated ? 0.1575 : 0.0, animations: { () -> Void in
